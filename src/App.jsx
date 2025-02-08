@@ -1589,6 +1589,24 @@ const App = () => {
   const [selectedLocation, setSelectedLocation] = React.useState("지역 선택");
   const [navigationParams, setNavigationParams] = React.useState({}); // 빈 객체로 초기화
 
+  React.useEffect(() => {
+    // 초기 히스토리 상태 설정
+    window.history.replaceState({ page: "main", stack: [] }, "");
+
+    const handlePopState = (event) => {
+      const state = event.state;
+      if (state) {
+        setCurrentPage(state.page);
+        setNavigationStack(state.stack || []);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   const navigateTo = (page, params = {}) => {
     if (page === "back") {
       if (navigationStack.length > 0) {
@@ -1596,6 +1614,13 @@ const App = () => {
         const previousPage = newStack.pop();
         setNavigationStack(newStack);
         setCurrentPage(previousPage);
+        window.history.pushState(
+          {
+            page: previousPage,
+            stack: newStack,
+          },
+          ""
+        );
       }
       if (params.selectedLocation) {
         setSelectedLocation(params.selectedLocation);
@@ -1608,13 +1633,26 @@ const App = () => {
         "community",
         "mypage",
       ].includes(page);
+      let newStack;
+
       if (!isMainPage) {
-        setNavigationStack([...navigationStack, currentPage]);
+        newStack = [...navigationStack, currentPage];
+        setNavigationStack(newStack);
       } else {
-        setNavigationStack([]);
+        newStack = [];
+        setNavigationStack(newStack);
       }
+
       setCurrentPage(page);
       setNavigationParams(params);
+
+      window.history.pushState(
+        {
+          page: page,
+          stack: newStack,
+        },
+        ""
+      );
     }
   };
 

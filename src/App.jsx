@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Home, Building2, Users, MessageCircle, User } from "lucide-react";
 import { TrendingUp, Star, MapPin, DollarSign, Clock } from "lucide-react";
 
@@ -550,45 +550,162 @@ const LocationPage = ({ onNavigate }) => {
   );
 };
 
-const GymListPage = ({ onNavigate, currentLocation }) => (
-  <div className="container">
-    <PageHeader
-      title="운동시설 목록"
-      showLocationButton={true}
-      currentLocation={currentLocation}
-      onLocationSelect={() => onNavigate("location")}
-    />{" "}
-    <div
-      style={{ flex: 1, padding: "1rem 1rem 5rem 1rem", position: "relative" }}
-    >
-      {" "}
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((id) => (
-          <button
-            key={id}
-            onClick={() => onNavigate("gymDetail", { id })}
-            className="card gym-trainer-item"
-            style={{ textAlign: "left", cursor: "pointer" }}
+const GymListPage = ({ onNavigate, currentLocation }) => {
+  const [activeTab, setActiveTab] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const contentRef = useRef(null);
+
+  const tabs = [
+    { id: 0, name: "헬스장" },
+    { id: 1, name: "필라테스" },
+    { id: 2, name: "주짓수" },
+  ];
+
+  const gymData = {
+    헬스장: Array.from({ length: 15 }, (_, i) => ({
+      id: i + 1,
+      name: `스포애니 ${i + 1}호점`,
+      location: "강남구 역삼동",
+      rating: 4.5,
+      price: "80,000",
+    })),
+    필라테스: Array.from({ length: 4 }, (_, i) => ({
+      id: i + 1,
+      name: `코어필라테스 ${i + 1}호점`,
+      location: "강남구 역삼동",
+      rating: 4.8,
+      price: "150,000",
+    })),
+    주짓수: Array.from({ length: 3 }, (_, i) => ({
+      id: i + 1,
+      name: `그레이시바하 ${i + 1}호점`,
+      location: "강남구 역삼동",
+      rating: 4.7,
+      price: "120,000",
+    })),
+  };
+
+  const handleTouchStart = (e) => {
+    setTouchStart(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && activeTab < tabs.length - 1) {
+      setActiveTab((prev) => prev + 1);
+    }
+    if (isRightSwipe && activeTab > 0) {
+      setActiveTab((prev) => prev - 1);
+    }
+
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
+  return (
+    <div className="container">
+      <PageHeader
+        title="운동시설 목록"
+        showLocationButton={true}
+        currentLocation={currentLocation}
+        onLocationSelect={() => onNavigate("location")}
+      />
+
+      <div style={{ position: "relative", flex: 1, overflowY: "hidden" }}>
+        {/* Tabs */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "white",
+            zIndex: 10,
+            borderBottom: "1px solid #e5e7eb",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: "4px",
+              padding: "8px",
+            }}
           >
-            <div className="gym-trainer-item-image" />
-            <div className="gym-trainer-item-content">
-              <h3 style={{ fontWeight: "bold", margin: 0 }}>
-                스마트 피트니스 {id}
-              </h3>{" "}
-              {/* margin 제거 */}
-              <p style={{ margin: "0.25rem 0" }}>강남구 역삼동</p>{" "}
-              {/* margin 조정 */}
-              <p style={{ margin: "0.25rem 0" }}>⭐️ 4.5</p> {/* margin 조정 */}
-              <p style={{ margin: "0.25rem 0" }}>80,000원/월</p>{" "}
-              {/* margin 조정 */}
-            </div>
-          </button>
-        ))}
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  flex: 1,
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  transition: "all 0.2s",
+                  backgroundColor: activeTab === tab.id ? "#3b82f6" : "#f3f4f6",
+                  color: activeTab === tab.id ? "white" : "#4b5563",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                {tab.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <div
+          ref={contentRef}
+          style={{
+            height: "100%",
+            overflowY: "auto",
+          }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+              padding: "0.5rem 0.5rem 1.5rem",
+            }}
+          >
+            {gymData[tabs[activeTab].name].map((gym) => (
+              <button
+                key={gym.id}
+                onClick={() => onNavigate("gymDetail", { id: gym.id })}
+                className="card gym-trainer-item"
+                style={{ textAlign: "left", cursor: "pointer" }}
+              >
+                <div className="gym-trainer-item-image" />
+                <div className="gym-trainer-item-content">
+                  <h3 style={{ fontWeight: "bold", margin: 0 }}>{gym.name}</h3>
+                  <p style={{ margin: "0.25rem 0" }}>{gym.location}</p>
+                  <p style={{ margin: "0.25rem 0" }}>⭐️ {gym.rating}</p>
+                  <p style={{ margin: "0.25rem 0" }}>{gym.price}원/월</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
+      <BottomNavigation currentPage="gyms" onNavigate={onNavigate} />
     </div>
-    <BottomNavigation currentPage="gyms" onNavigate={onNavigate} />
-  </div>
-);
+  );
+};
 
 const GymDetailPage = ({ onNavigate }) => {
   const membershipRef = useRef(null);

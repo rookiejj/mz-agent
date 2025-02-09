@@ -568,8 +568,12 @@ const LocationPage = ({ onNavigate }) => {
   );
 };
 
-const GymListPage = ({ onNavigate, currentLocation }) => {
-  const [activeTab, setActiveTab] = useState(0);
+const GymListPage = ({ onNavigate, currentLocation, navigationParams }) => {
+  const [activeTab, setActiveTab] = useState(() => {
+    if (navigationParams?.type === "pilates") return 1;
+    if (navigationParams?.type === "jiujitsu") return 2;
+    return 0;
+  });
   const contentRef = useRef(null);
 
   const tabs = [
@@ -608,11 +612,12 @@ const GymListPage = ({ onNavigate, currentLocation }) => {
   const handleGymClick = (gym, type) => {
     onNavigate("gymDetail", {
       id: gym.id,
-      type: type, // type 파라미터 전달
+      type: type,
       name: gym.name,
       location: gym.location,
       rating: gym.rating,
       price: gym.price,
+      previousTab: activeTab, // Add the active tab state
     });
   };
 

@@ -484,6 +484,7 @@ const LocationPage = ({ onNavigate }) => {
   const [selectedCity, setSelectedCity] = React.useState(null);
 
   const cities = [
+    { id: "all", name: "전체" }, // 추가된 부분
     { id: "seoul", name: "서울" },
     { id: "gyeonggi", name: "경기" },
     { id: "incheon", name: "인천" },
@@ -492,11 +493,12 @@ const LocationPage = ({ onNavigate }) => {
   ];
 
   const districts = {
-    seoul: ["강남구", "서초구", "송파구", "강동구", "마포구"],
-    gyeonggi: ["수원시", "성남시", "고양시", "용인시", "부천시"],
-    incheon: ["중구", "동구", "미추홀구", "연수구", "남동구"],
-    busan: ["중구", "서구", "동구", "영도구", "부산진구"],
-    daegu: ["중구", "동구", "서구", "남구", "북구"],
+    all: ["전체"], // 추가된 부분
+    seoul: ["전체", "강남구", "서초구", "송파구", "강동구", "마포구"], // "전체" 추가
+    gyeonggi: ["전체", "수원시", "성남시", "고양시", "용인시", "부천시"], // "전체" 추가
+    incheon: ["전체", "중구", "동구", "미추홀구", "연수구", "남동구"], // "전체" 추가
+    busan: ["전체", "중구", "서구", "동구", "영도구", "부산진구"], // "전체" 추가
+    daegu: ["전체", "중구", "동구", "서구", "남구", "북구"], // "전체" 추가
   };
 
   if (!selectedCity) {
@@ -518,7 +520,13 @@ const LocationPage = ({ onNavigate }) => {
             {cities.map((city) => (
               <button
                 key={city.id}
-                onClick={() => setSelectedCity(city)}
+                onClick={() => {
+                  if (city.id === "all") {
+                    onNavigate("back", { selectedLocation: "전체" });
+                  } else {
+                    setSelectedCity(city);
+                  }
+                }}
                 className="location-selection-button"
               >
                 {city.name}
@@ -550,7 +558,10 @@ const LocationPage = ({ onNavigate }) => {
               key={district}
               onClick={() =>
                 onNavigate("back", {
-                  selectedLocation: `${selectedCity.name} ${district}`,
+                  selectedLocation:
+                    district === "전체"
+                      ? `${selectedCity.name} 전체`
+                      : `${selectedCity.name} ${district}`,
                 })
               }
               className="location-selection-button"
@@ -902,7 +913,7 @@ const GymDetailPage = ({ onNavigate, navigationParams }) => {
             className="primary-button"
             onClick={() => onNavigate("consultation", { source: "gym" })}
           >
-            전화받기
+            상담신청
           </button>{" "}
         </div>
       </div>
@@ -1280,7 +1291,7 @@ const TrainerDetailPage = ({ onNavigate, navigationParams }) => {
             style={{ flex: 1 }}
             onClick={() => onNavigate("consultation", { source: "trainer" })}
           >
-            전화받기
+            상담신청
           </button>
         </div>
       </div>

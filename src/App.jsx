@@ -1477,7 +1477,7 @@ const CommunityDetailPage = ({ onNavigate }) => {
               gap: "1rem",
               fontSize: "0.875rem",
               color: "#6b7280",
-              marginBottom: "1rem",
+              marginBottom: "2rem",
             }}
           >
             <span>헬린이</span>

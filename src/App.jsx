@@ -1364,7 +1364,7 @@ const CommunityPage = ({ onNavigate, currentLocation }) => (
       showLocationButton={true}
       currentLocation={currentLocation}
       onLocationSelect={() => onNavigate("location")}
-    />{" "}
+    />
     <div
       style={{ flex: 1, padding: "1rem 1rem 5rem 1rem", position: "relative" }}
     >
@@ -1377,11 +1377,23 @@ const CommunityPage = ({ onNavigate, currentLocation }) => (
             style={{ width: "100%", textAlign: "left" }}
           >
             <h3>운동 초보자 PT 추천해주세요 {id}</h3>
-            <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "0.25rem", // 간격 증가
+              }}
+            >
               <span>헬린이</span>
-              <span>2024-02-06</span>
+              <span style={{ color: "#6b7280" }}>2024-02-06</span>
             </div>
-            <div>
+            <div
+              style={{
+                display: "flex",
+                gap: "0.75rem",
+              }}
+            >
               <span>👍 24</span>
               <span>💬 12</span>
             </div>
@@ -1393,7 +1405,7 @@ const CommunityPage = ({ onNavigate, currentLocation }) => (
         onClick={() => onNavigate("communityCreate")}
       >
         +
-      </button>{" "}
+      </button>
     </div>
     <BottomNavigation currentPage="community" onNavigate={onNavigate} />
   </div>

@@ -1432,7 +1432,6 @@ const CommunityDetailPage = ({ onNavigate }) => {
           top: 0,
           backgroundColor: "white",
           zIndex: 10,
-          borderBottom: "1px solid #e5e7eb",
         }}
       >
         <button onClick={() => onNavigate("back")} className="back-button">
@@ -1454,7 +1453,7 @@ const CommunityDetailPage = ({ onNavigate }) => {
       <div
         style={{
           flex: 1,
-          padding: "1.5rem 2rem",
+          padding: "0.5rem 2rem",
           height: "calc(100% - 8rem)",
           overflowY: "auto",
         }}

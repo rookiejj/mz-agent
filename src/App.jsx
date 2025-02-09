@@ -898,7 +898,12 @@ const GymDetailPage = ({ onNavigate, navigationParams }) => {
             요금보기
           </button>
           <button className="primary-button">전화걸기</button>
-          <button className="primary-button">전화받기</button>
+          <button
+            className="primary-button"
+            onClick={() => onNavigate("consultation", { source: "gym" })}
+          >
+            전화받기
+          </button>{" "}
         </div>
       </div>
     </div>
@@ -1270,7 +1275,11 @@ const TrainerDetailPage = ({ onNavigate, navigationParams }) => {
           >
             요금보기
           </button>
-          <button className="primary-button" style={{ flex: 1 }}>
+          <button
+            className="primary-button"
+            style={{ flex: 1 }}
+            onClick={() => onNavigate("consultation", { source: "trainer" })}
+          >
             전화받기
           </button>
         </div>
@@ -1854,6 +1863,193 @@ const PaymentPage = ({ onNavigate, navigationParams }) => {
   );
 };
 
+const ConsultationPage = ({ onNavigate, navigationParams }) => {
+  const [name, setName] = React.useState("");
+  const [preferredTime, setPreferredTime] = React.useState("");
+  const [content, setContent] = React.useState("");
+  const { source = "gym" } = navigationParams || {};
+
+  const handleSubmit = () => {
+    if (name.trim() && preferredTime.trim() && content.trim()) {
+      onNavigate("back");
+    }
+  };
+
+  return (
+    <div
+      className="container"
+      style={{
+        backgroundColor: "white",
+        paddingBottom: 0,
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          padding: "1rem",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <button onClick={() => onNavigate("back")} className="back-button">
+          ←
+        </button>
+        <h1
+          style={{
+            flex: 1,
+            textAlign: "center",
+            fontSize: "1.25rem",
+            fontWeight: "bold",
+          }}
+        >
+          상담 신청하기
+        </h1>
+        <div style={{ width: "2rem" }} />
+      </div>
+
+      {/* Scrollable Content */}
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "1rem 2rem",
+          paddingBottom: "5rem",
+        }}
+      >
+        <div style={{ marginBottom: "1.5rem" }}>
+          <label
+            style={{
+              display: "block",
+              marginLeft: "0.5rem",
+              marginBottom: "0.5rem",
+              fontWeight: "500",
+            }}
+          >
+            이름
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={"상담 받으실 분의 이름을 입력해주세요"}
+            style={{
+              width: "100%",
+              padding: "0.75rem",
+              border: "1px solid #e5e7eb",
+              borderRadius: "0.5rem",
+              fontSize: "1rem",
+              backgroundColor: "white",
+              color: "black",
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: "1.5rem" }}>
+          <label
+            style={{
+              display: "block",
+              marginLeft: "0.5rem",
+              marginBottom: "0.5rem",
+              fontWeight: "500",
+            }}
+          >
+            희망 상담 시간
+          </label>
+          <input
+            type="text"
+            value={preferredTime}
+            onChange={(e) => setPreferredTime(e.target.value)}
+            placeholder="예) 평일 오후 2시 이후, 주말 오전 등"
+            style={{
+              width: "100%",
+              padding: "0.75rem",
+              border: "1px solid #e5e7eb",
+              borderRadius: "0.5rem",
+              fontSize: "1rem",
+              backgroundColor: "white",
+              color: "black",
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: "1.5rem" }}>
+          <label
+            style={{
+              display: "block",
+              marginLeft: "0.5rem",
+              marginBottom: "0.5rem",
+              fontWeight: "500",
+            }}
+          >
+            상담 내용
+          </label>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder={"상담하고 싶으신 내용을 자유롭게 작성해주세요"}
+            style={{
+              width: "100%",
+              height: "10rem",
+              padding: "0.75rem",
+              border: "1px solid #e5e7eb",
+              borderRadius: "0.5rem",
+              fontSize: "1rem",
+              resize: "none",
+              backgroundColor: "white",
+              color: "black",
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Fixed Footer */}
+      <div
+        style={{
+          padding: "1rem",
+          backgroundColor: "white",
+          borderTop: "1px solid #e5e7eb",
+          position: "fixed",
+          bottom: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "480px",
+          maxWidth: "100%",
+          boxSizing: "border-box",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "480px",
+            margin: "0 auto",
+            width: "100%",
+            padding: "0 1rem",
+            boxSizing: "border-box",
+          }}
+        >
+          <button
+            onClick={handleSubmit}
+            className="primary-button"
+            style={{
+              width: "100%",
+              opacity:
+                name.trim() && preferredTime.trim() && content.trim() ? 1 : 0.5,
+              cursor:
+                name.trim() && preferredTime.trim() && content.trim()
+                  ? "pointer"
+                  : "default",
+            }}
+          >
+            신청하기
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   const [currentPage, setCurrentPage] = React.useState("main");
   const [navigationStack, setNavigationStack] = React.useState([]);
@@ -1971,6 +2167,8 @@ const App = () => {
             source={navigationParams.source}
           />
         );
+      case "consultation": // 새로 추가된 케이스
+        return <ConsultationPage {...commonProps} />;
       default:
         return <MainPage {...commonProps} />;
     }

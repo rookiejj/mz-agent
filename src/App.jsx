@@ -379,23 +379,34 @@ const FeaturedGymCard = ({ name, rating, location, price, onClick }) => (
 const TrainerCard = ({ name, specialty, rating, experience, onClick }) => (
   <button
     onClick={onClick}
-    className="card"
+    className="card gym-trainer-item"
     style={{
       width: "100%",
-      textAlign: "left",
+      textAlign: "center",
       cursor: "pointer",
       padding: "0.75rem",
+      backgroundColor: "white",
+      borderRadius: "0.75rem",
+      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.15)",
+      border: "1px solid #e5e7eb",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
     }}
   >
     <div
       className="gym-trainer-item-image"
-      style={{ marginBottom: "0.75rem" }}
+      style={{
+        margin: "0rem auto",
+        marginBottom: "1rem",
+      }}
     />
-    <h3 style={{ fontWeight: "bold", margin: 0 }}>{name}</h3>
+    <h3 style={{ fontWeight: "bold", margin: "0 0 0.25rem 0" }}>{name}</h3>
     <div
       style={{
         display: "flex",
         alignItems: "center",
+        justifyContent: "center",
         color: "#fbbf24",
         margin: "0.25rem 0",
       }}
@@ -408,13 +419,20 @@ const TrainerCard = ({ name, specialty, rating, experience, onClick }) => (
         style={{
           display: "flex",
           alignItems: "center",
+          justifyContent: "center",
           marginBottom: "0.25rem",
         }}
       >
         <Users size={16} style={{ marginRight: "0.25rem" }} />
         <span>{specialty}</span>
       </div>
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Clock size={16} style={{ marginRight: "0.25rem" }} />
         <span>경력 {experience}</span>
       </div>

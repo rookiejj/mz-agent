@@ -605,6 +605,17 @@ const GymListPage = ({ onNavigate, currentLocation }) => {
     })),
   };
 
+  const handleGymClick = (gym, type) => {
+    onNavigate("gymDetail", {
+      id: gym.id,
+      type: type, // type 파라미터 전달
+      name: gym.name,
+      location: gym.location,
+      rating: gym.rating,
+      price: gym.price,
+    });
+  };
+
   return (
     <div className="container">
       <PageHeader
@@ -662,12 +673,7 @@ const GymListPage = ({ onNavigate, currentLocation }) => {
             {gymData[tabs[activeTab].name].map((gym) => (
               <button
                 key={gym.id}
-                onClick={() =>
-                  onNavigate("gymDetail", {
-                    id: gym.id,
-                    type: tabs[activeTab].type,
-                  })
-                }
+                onClick={() => handleGymClick(gym, tabs[activeTab].type)}
                 className="card gym-trainer-item"
                 style={{ textAlign: "left", cursor: "pointer" }}
               >
@@ -690,7 +696,7 @@ const GymListPage = ({ onNavigate, currentLocation }) => {
 
 const GymDetailPage = ({ onNavigate, navigationParams }) => {
   const membershipRef = useRef(null);
-  const { type = "gym" } = navigationParams || {};
+  const { type = "gym", ...otherParams } = navigationParams || {};
 
   const facilityInfo = {
     gym: {
@@ -735,7 +741,12 @@ const GymDetailPage = ({ onNavigate, navigationParams }) => {
   };
 
   const handlePlanClick = (plan) => {
-    onNavigate("payment", { plan, source: "gym" });
+    onNavigate("payment", {
+      plan,
+      source: "gym",
+      type: type, // payment 페이지로 type 전달
+      ...otherParams,
+    });
   };
 
   return (
@@ -1497,12 +1508,16 @@ const CommunityCreatePage = ({ onNavigate }) => {
 };
 
 const PaymentPage = ({ onNavigate, navigationParams }) => {
-  const { plan, source, type = "gym" } = navigationParams;
+  const { plan, source, type = "gym", ...otherParams } = navigationParams;
 
   const typeInfo = {
     gym: { title: "이용권" },
     pilates: { title: "수강권" },
     jiujitsu: { title: "수련권" },
+  };
+
+  const handleBack = () => {
+    onNavigate("back", { type, ...otherParams }); // 뒤로가기 시 type과 기타 파라미터 전달
   };
 
   const renderPaymentInfo = () => {
@@ -1636,7 +1651,7 @@ const PaymentPage = ({ onNavigate, navigationParams }) => {
         <div style={{ display: "flex", gap: "0.5rem" }}>
           <button
             className="secondary-button"
-            onClick={() => onNavigate("back")}
+            onClick={handleBack}
             style={{ flex: 1 }}
           >
             취소

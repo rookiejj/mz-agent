@@ -552,8 +552,6 @@ const LocationPage = ({ onNavigate }) => {
 
 const GymListPage = ({ onNavigate, currentLocation }) => {
   const [activeTab, setActiveTab] = useState(0);
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
   const contentRef = useRef(null);
 
   const tabs = [
@@ -584,32 +582,6 @@ const GymListPage = ({ onNavigate, currentLocation }) => {
       rating: 4.7,
       price: "120,000",
     })),
-  };
-
-  const handleTouchStart = (e) => {
-    setTouchStart(e.touches[0].clientX);
-  };
-
-  const handleTouchMove = (e) => {
-    setTouchEnd(e.touches[0].clientX);
-  };
-
-  const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > 50;
-    const isRightSwipe = distance < -50;
-
-    if (isLeftSwipe && activeTab < tabs.length - 1) {
-      setActiveTab((prev) => prev + 1);
-    }
-    if (isRightSwipe && activeTab > 0) {
-      setActiveTab((prev) => prev - 1);
-    }
-
-    setTouchStart(null);
-    setTouchEnd(null);
   };
 
   return (
@@ -671,9 +643,6 @@ const GymListPage = ({ onNavigate, currentLocation }) => {
             height: "100%",
             overflowY: "auto",
           }}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
         >
           <div
             style={{

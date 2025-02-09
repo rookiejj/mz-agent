@@ -577,13 +577,13 @@ const GymListPage = ({ onNavigate, currentLocation, navigationParams }) => {
   const contentRef = useRef(null);
 
   const tabs = [
-    { id: 0, name: "헬스장", type: "gym" },
+    { id: 0, name: "헬스", type: "gym" },
     { id: 1, name: "필라테스", type: "pilates" },
     { id: 2, name: "주짓수", type: "jiujitsu" },
   ];
 
   const gymData = {
-    헬스장: Array.from({ length: 15 }, (_, i) => ({
+    헬스: Array.from({ length: 15 }, (_, i) => ({
       id: i + 1,
       name: `스포애니 ${i + 1}호점`,
       location: "강남구 역삼동",
@@ -768,11 +768,7 @@ const GymDetailPage = ({ onNavigate, navigationParams }) => {
             fontWeight: "bold",
           }}
         >
-          {type === "gym"
-            ? "헬스장"
-            : type === "pilates"
-            ? "필라테스"
-            : "주짓수"}{" "}
+          {type === "gym" ? "헬스" : type === "pilates" ? "필라테스" : "주짓수"}{" "}
           상세
         </h1>
         <div style={{ width: "2rem" }} />
@@ -909,63 +905,229 @@ const GymDetailPage = ({ onNavigate, navigationParams }) => {
   );
 };
 
-const TrainerListPage = ({ onNavigate, currentLocation }) => (
-  <div className="container">
-    <PageHeader
-      title="트레이너 목록"
-      showLocationButton={true}
-      currentLocation={currentLocation}
-      onLocationSelect={() => onNavigate("location")}
-    />{" "}
-    <div
-      style={{ flex: 1, padding: "1rem 1rem 5rem 1rem", position: "relative" }}
-    >
-      {" "}
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((id) => (
-          <button
-            key={id}
-            onClick={() => onNavigate("trainerDetail", { id })}
-            className="card gym-trainer-item"
-            style={{ textAlign: "left", cursor: "pointer" }}
-          >
-            <div className="gym-trainer-item-image" />
-            <div className="gym-trainer-item-content">
-              <h3 style={{ fontWeight: "bold", margin: 0 }}>김트레이너 {id}</h3>
-              <p style={{ margin: "0.25rem 0" }}>체중감량, 근력강화</p>
-              <p style={{ margin: "0.25rem 0" }}>⭐️ 4.8</p>
-              <p style={{ margin: "0.25rem 0" }}>100,000원/회</p>
-            </div>
-          </button>
-        ))}
-      </div>
-    </div>
-    <BottomNavigation currentPage="trainers" onNavigate={onNavigate} />
-  </div>
-);
+const TrainerListPage = ({ onNavigate, currentLocation, navigationParams }) => {
+  const [activeTab, setActiveTab] = useState(() => {
+    if (navigationParams?.type === "pilates") return 1;
+    if (navigationParams?.type === "jiujitsu") return 2;
+    return 0;
+  });
+  const contentRef = useRef(null);
 
-const TrainerDetailPage = ({ onNavigate }) => {
-  const lessonRef = useRef(null);
-  const lessonPlans = [
-    {
-      sessions: "30회",
-      pricePerSession: "60,000원",
-      totalPrice: "1,800,000원",
-    },
-    {
-      sessions: "20회",
-      pricePerSession: "70,000원",
-      totalPrice: "1,400,000원",
-    },
-    { sessions: "10회", pricePerSession: "80,000원", totalPrice: "800,000원" },
+  const tabs = [
+    { id: 0, name: "헬스", type: "gym" },
+    { id: 1, name: "필라테스", type: "pilates" },
+    { id: 2, name: "주짓수", type: "jiujitsu" },
   ];
+
+  const trainerData = {
+    헬스: Array.from({ length: 8 }, (_, i) => ({
+      id: i + 1,
+      name: `김트레이너 ${i + 1}`,
+      specialties: "체중감량, 근력강화",
+      rating: 4.8,
+      price: "100,000",
+      type: "gym",
+    })),
+    필라테스: Array.from({ length: 5 }, (_, i) => ({
+      id: i + 1,
+      name: `이트레이너 ${i + 1}`,
+      specialties: "자세교정, 재활운동",
+      rating: 4.9,
+      price: "120,000",
+      type: "pilates",
+    })),
+    주짓수: Array.from({ length: 3 }, (_, i) => ({
+      id: i + 1,
+      name: `박트레이너 ${i + 1}`,
+      specialties: "주짓수 입문, 그래플링",
+      rating: 4.7,
+      price: "110,000",
+      type: "jiujitsu",
+    })),
+  };
+
+  const handleTrainerClick = (trainer, type) => {
+    onNavigate("trainerDetail", {
+      id: trainer.id,
+      type: type,
+      name: trainer.name,
+      specialties: trainer.specialties,
+      rating: trainer.rating,
+      price: trainer.price,
+      previousTab: activeTab,
+    });
+  };
+
+  return (
+    <div className="container">
+      <PageHeader
+        title="트레이너 목록"
+        showLocationButton={true}
+        currentLocation={currentLocation}
+        onLocationSelect={() => onNavigate("location")}
+      />
+
+      <div style={{ position: "relative", flex: 1, overflowY: "hidden" }}>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "white",
+            zIndex: 10,
+            borderBottom: "1px solid #e5e7eb",
+          }}
+        >
+          <div style={{ display: "flex", gap: "4px", padding: "8px" }}>
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  flex: 1,
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  transition: "all 0.2s",
+                  backgroundColor: activeTab === tab.id ? "#3b82f6" : "#f3f4f6",
+                  color: activeTab === tab.id ? "white" : "#4b5563",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                {tab.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div ref={contentRef} style={{ height: "100%", overflowY: "auto" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+              padding: "0.5rem 0.5rem 1.5rem",
+            }}
+          >
+            {trainerData[tabs[activeTab].name].map((trainer) => (
+              <button
+                key={trainer.id}
+                onClick={() =>
+                  handleTrainerClick(trainer, tabs[activeTab].type)
+                }
+                className="card gym-trainer-item"
+                style={{ textAlign: "left", cursor: "pointer" }}
+              >
+                <div className="gym-trainer-item-image" />
+                <div className="gym-trainer-item-content">
+                  <h3 style={{ fontWeight: "bold", margin: 0 }}>
+                    {trainer.name}
+                  </h3>
+                  <p style={{ margin: "0.25rem 0" }}>{trainer.specialties}</p>
+                  <p style={{ margin: "0.25rem 0" }}>⭐️ {trainer.rating}</p>
+                  <p style={{ margin: "0.25rem 0" }}>{trainer.price}원/회</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <BottomNavigation currentPage="trainers" onNavigate={onNavigate} />
+    </div>
+  );
+};
+
+const TrainerDetailPage = ({ onNavigate, navigationParams }) => {
+  const lessonRef = useRef(null);
+  const { type = "gym", ...otherParams } = navigationParams || {};
+
+  const trainerInfo = {
+    gym: {
+      name: "김트레이너",
+      rating: 4.8,
+      specialties: "체중감량, 근력강화",
+      experience: "5년",
+      certifications: ["생활스포츠지도사 2급", "NSCA-CPT", "KATA-PTS"],
+      plans: [
+        {
+          sessions: "30회",
+          pricePerSession: "60,000",
+          totalPrice: "1,800,000",
+        },
+        {
+          sessions: "20회",
+          pricePerSession: "70,000",
+          totalPrice: "1,400,000",
+        },
+        { sessions: "10회", pricePerSession: "80,000", totalPrice: "800,000" },
+      ],
+    },
+    pilates: {
+      name: "이트레이너",
+      rating: 4.9,
+      specialties: "자세교정, 재활운동",
+      experience: "7년",
+      certifications: [
+        "필라테스 지도자 자격증",
+        "재활 트레이닝 전문가",
+        "매트 필라테스 자격증",
+      ],
+      plans: [
+        {
+          sessions: "30회",
+          pricePerSession: "70,000",
+          totalPrice: "2,100,000",
+        },
+        {
+          sessions: "20회",
+          pricePerSession: "80,000",
+          totalPrice: "1,600,000",
+        },
+        { sessions: "10회", pricePerSession: "90,000", totalPrice: "900,000" },
+      ],
+    },
+    jiujitsu: {
+      name: "박트레이너",
+      rating: 4.7,
+      specialties: "주짓수 입문, 그래플링",
+      experience: "6년",
+      certifications: [
+        "주짓수 블랙벨트",
+        "종합격투기 지도자 자격증",
+        "퍼스널 트레이닝 자격증",
+      ],
+      plans: [
+        {
+          sessions: "30회",
+          pricePerSession: "65,000",
+          totalPrice: "1,950,000",
+        },
+        {
+          sessions: "20회",
+          pricePerSession: "75,000",
+          totalPrice: "1,500,000",
+        },
+        { sessions: "10회", pricePerSession: "85,000", totalPrice: "850,000" },
+      ],
+    },
+  };
+
+  const currentTrainer = trainerInfo[type];
 
   const scrollToLesson = () => {
     lessonRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handlePlanClick = (plan) => {
-    onNavigate("payment", { plan, source: "trainer" });
+    onNavigate("payment", {
+      plan,
+      source: "trainer",
+      type: type,
+      ...otherParams,
+    });
   };
 
   return (
@@ -982,6 +1144,7 @@ const TrainerDetailPage = ({ onNavigate }) => {
             fontWeight: "bold",
           }}
         >
+          {type === "gym" ? "헬스" : type === "pilates" ? "필라테스" : "주짓수"}{" "}
           트레이너 상세
         </h1>
         <div style={{ width: "2rem" }} />
@@ -997,19 +1160,23 @@ const TrainerDetailPage = ({ onNavigate }) => {
               marginBottom: "0.5rem",
             }}
           >
-            김트레이너
+            {currentTrainer.name}
           </h2>
-          <p style={{ marginBottom: "0.25rem" }}>⭐️ 4.8</p>
-          <p style={{ marginBottom: "0.25rem" }}>💪 체중감량, 근력강화</p>
-          <p style={{ marginBottom: "0.25rem" }}>📝 경력 5년</p>
+          <p style={{ marginBottom: "0.25rem" }}>⭐️ {currentTrainer.rating}</p>
+          <p style={{ marginBottom: "0.25rem" }}>
+            💪 {currentTrainer.specialties}
+          </p>
+          <p style={{ marginBottom: "0.25rem" }}>
+            📝 경력 {currentTrainer.experience}
+          </p>
         </div>
 
         <div style={{ marginBottom: "1.5rem" }}>
           <h3 style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>자격증</h3>
           <ul style={{ paddingLeft: "1.25rem", listStyle: "disc" }}>
-            <li>생활스포츠지도사 2급</li>
-            <li>NSCA-CPT</li>
-            <li>KATA-PTS</li>
+            {currentTrainer.certifications.map((cert, index) => (
+              <li key={index}>{cert}</li>
+            ))}
           </ul>
         </div>
 
@@ -1030,7 +1197,7 @@ const TrainerDetailPage = ({ onNavigate }) => {
           <div
             style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
           >
-            {lessonPlans.map((plan) => (
+            {currentTrainer.plans.map((plan) => (
               <div
                 key={plan.sessions}
                 onClick={() => handlePlanClick(plan)}
@@ -1056,10 +1223,10 @@ const TrainerDetailPage = ({ onNavigate }) => {
                     {plan.sessions}
                   </div>
                   <div style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                    회당 {plan.pricePerSession}
+                    회당 {plan.pricePerSession}원
                   </div>
                   <div style={{ color: "#3b82f6", fontWeight: "bold" }}>
-                    총 {plan.totalPrice}
+                    총 {plan.totalPrice}원
                   </div>
                 </div>
                 <button

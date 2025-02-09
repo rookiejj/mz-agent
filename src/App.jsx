@@ -1460,34 +1460,40 @@ const CommunityDetailPage = ({ onNavigate }) => {
         }}
       >
         <div style={{ marginBottom: "1.5rem" }}>
-          <div
+          <h2
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "1rem",
+              fontSize: "1.25rem",
+              fontWeight: "bold",
+              marginBottom: "0.5rem",
             }}
           >
-            <h2 style={{ fontSize: "1.25rem", fontWeight: "bold" }}>
-              운동 초보자 PT 추천해주세요
-            </h2>
-            <div style={{ display: "flex", gap: "1rem", color: "#6b7280" }}>
-              <span>👍 24</span>
-              <span>💬 12</span>
-            </div>
-          </div>
+            운동 초보자 PT 추천해주세요
+          </h2>
+
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
-              color: "#6b7280",
+              alignItems: "center",
+              gap: "1rem",
               fontSize: "0.875rem",
-              marginBottom: "1.5rem",
+              color: "#6b7280",
+              marginBottom: "1rem",
             }}
           >
             <span>헬린이</span>
             <span>2024-02-06</span>
+            <div
+              style={{
+                display: "flex",
+                gap: "0.5rem",
+                color: "#6b7280",
+              }}
+            >
+              <span style={{ fontSize: "0.875rem" }}>👍 24</span>
+              <span style={{ fontSize: "0.875rem" }}>💬 12</span>
+            </div>
           </div>
+
           <p style={{ lineHeight: "1.6", marginBottom: "2rem" }}>
             안녕하세요! 운동을 처음 시작하려고 하는데 PT를 받아보려고 합니다.
             제가 사는 곳 근처에 헬스장이 몇 군데 있는데, 어떤 기준으로 PT

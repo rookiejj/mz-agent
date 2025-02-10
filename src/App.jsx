@@ -911,7 +911,13 @@ const GymDetailPage = ({ onNavigate, navigationParams }) => {
           <button className="primary-button">전화걸기</button>
           <button
             className="primary-button"
-            onClick={() => onNavigate("consultation", { source: "gym" })}
+            onClick={() =>
+              onNavigate("consultation", {
+                source: "gym",
+                type: type,
+                previousTab: navigationParams?.previousTab,
+              })
+            }
           >
             상담신청
           </button>{" "}
@@ -1289,7 +1295,13 @@ const TrainerDetailPage = ({ onNavigate, navigationParams }) => {
           <button
             className="primary-button"
             style={{ flex: 1 }}
-            onClick={() => onNavigate("consultation", { source: "trainer" })}
+            onClick={() =>
+              onNavigate("consultation", {
+                source: "trainer",
+                type: type,
+                previousTab: navigationParams?.previousTab,
+              })
+            }
           >
             상담신청
           </button>
@@ -1882,7 +1894,10 @@ const ConsultationPage = ({ onNavigate, navigationParams }) => {
 
   const handleSubmit = () => {
     if (name.trim() && preferredTime.trim() && content.trim()) {
-      onNavigate("back");
+      onNavigate("back", {
+        type: navigationParams?.type,
+        previousTab: navigationParams?.previousTab,
+      });
     }
   };
 

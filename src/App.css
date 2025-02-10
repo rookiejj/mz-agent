@@ -81,6 +81,22 @@ body {
   box-sizing: border-box;
 }
 
+.service-selector {
+  height: 100%;
+  overflow-y: auto;
+  background-color: #f3f4f6;
+}
+
+.service-card {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease-in-out;
+}
+
+.service-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
 .container {
   width: 480px;
   max-width: 480px;
@@ -399,7 +415,16 @@ a,
   color: #3b82f6;
 }
 
+/* 모바일 최적화 */
 @media (max-width: 480px) {
+  .service-card {
+    margin-bottom: 0.5rem;
+  }
+
+  .service-selector {
+    padding-bottom: 4rem;
+  }
+
   .container {
     width: 100%;
   }
